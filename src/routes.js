@@ -42,11 +42,20 @@ export const routes = [
         path: buildRoutePath('/tasks/:id'),
         handler: (req, res) => {
             const { id } = req.params
-            const { name, email } = req.body
+            const { title, description } = req.body
 
+            const tasksData = database.select('tasks', id ? {
+                id
+            } : null)
+            const {created_at, completed_at} = tasksData[0]
+            
             database.update('tasks', id, {
-                name,
-                email
+                id,
+                title,
+                description,
+                completed_at,
+                created_at,
+                updated_at: new Date()
             })
 
             return res.writeHead(204).end()
